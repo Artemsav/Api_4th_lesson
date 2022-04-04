@@ -1,9 +1,12 @@
-from pathlib import Path
 import os
-from dotenv import load_dotenv
-import requests
-from urllib.parse import urlparse
+import time
 import urllib
+from pathlib import Path
+from urllib.parse import urlparse
+
+import requests
+from dotenv import load_dotenv
+from telegram import Bot
 
 
 def fetch_spacex_last_launch():
@@ -53,7 +56,51 @@ def fetch_nasa_apod():
         with open(named_path, 'wb') as file:
             file.write(responce.content)
 
+
+def fetch_nasa_epic():
+    api_key = os.getenv('NASA_API_KEY')
+    payload = {'api_key': api_key}
+    url = 'https://api.nasa.gov/EPIC/api/natural/images?api_key=DEMO_KEY'
+    r = requests.get(url)
+    for index, _ in enumerate(r.json()):
+        date, time = _.get('date').split()
+        year, month, day = date.split('-')
+        image_id = _.get('image')
+        image_url = f'https://api.nasa.gov/EPIC/archive/natural/{year}/{month}/{day}/png/{image_id}.png'
+        folder = 'images'
+        home = Path().resolve()
+        path = Path(home, folder)
+        Path(path).mkdir(parents=True, exist_ok=True)
+        ext = get_extention(url)
+        file_name = f'EPIC{index}{ext}'
+        named_path = f'{path}/{file_name}'
+        img_r = requests.get(url=image_url, params=payload)
+        img_r.raise_for_status()
+        with open(named_path, 'wb') as file:
+            file.write(img_r.content)
+
+
+def main():
+    token = os.getenv('TOKEN_TELEGRAM')
+    user_id = os.getenv('USER_ID')
+    bot = Bot(token=token)
+    while True:
+        try:
+            tree = os.walk('./images')
+            for address, dirs, photos in tree:
+                for photo in photos:
+                    bot.send_photo(chat_id=user_id, photo=open(f'./images/{photo}', 'rb'))
+                    time.sleep(10)
+        except ConnectionError:
+            time.sleep(60)
+        except requests.exceptions.ReadTimeout:
+            pass
+        break
+
+
 if __name__ == '__main__':
     load_dotenv()
     #fetch_spacex_last_launch()
-    fetch_nasa_apod()
+    #fetch_nasa_apod()
+    #fetch_nasa_epic()
+    main()
