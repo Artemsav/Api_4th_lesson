@@ -10,7 +10,7 @@ from telegram import Bot
 
 
 def fetch_spacex_last_launch():
-    url = 'https://api.spacexdata.com/v4/launches/5eb87d42ffd86e000604b384'
+    url = 'https://api.spacexdata.com/v4/launches/latest'
     r = requests.get(url)
     api_r = r.json()
     images_urls = api_r.get('links').get('flickr').get('original')
@@ -38,7 +38,7 @@ def get_extention(url):
 def fetch_nasa_apod():
     api_key = os.getenv('NASA_API_KEY')
     url = 'https://api.nasa.gov/planetary/apod'
-    number_of_pictures = 50
+    number_of_pictures = 10
     payload = {'api_key': api_key, 'count': number_of_pictures}
     r = requests.get(url=url, params=payload)
     api_r = r.json()
@@ -49,12 +49,14 @@ def fetch_nasa_apod():
         path = Path(home, folder)
         Path(path).mkdir(parents=True, exist_ok=True)
         ext = get_extention(image_url)
-        file_name = f'NASA{index}{ext}'
-        named_path = f'{path}/{file_name}'
-        responce = requests.get(image_url)
-        responce.raise_for_status()
-        with open(named_path, 'wb') as file:
-            file.write(responce.content)
+        allowed_ext = ['.jpg', '.gif', '.png']
+        if ext in allowed_ext:
+            file_name = f'NASA{index}{ext}'
+            named_path = f'{path}/{file_name}'
+            responce = requests.get(image_url)
+            responce.raise_for_status()
+            with open(named_path, 'wb') as file:
+                file.write(responce.content)
 
 
 def fetch_nasa_epic():
@@ -71,8 +73,7 @@ def fetch_nasa_epic():
         home = Path().resolve()
         path = Path(home, folder)
         Path(path).mkdir(parents=True, exist_ok=True)
-        ext = get_extention(url)
-        file_name = f'EPIC{index}{ext}'
+        file_name = f'EPIC{index}.png'
         named_path = f'{path}/{file_name}'
         img_r = requests.get(url=image_url, params=payload)
         img_r.raise_for_status()
@@ -83,6 +84,10 @@ def fetch_nasa_epic():
 def main():
     token = os.getenv('TOKEN_TELEGRAM')
     user_id = os.getenv('USER_ID')
+    sleep_time = os.getenv('SLEEP_TIME')
+    fetch_spacex_last_launch()
+    fetch_nasa_apod()
+    fetch_nasa_epic()
     bot = Bot(token=token)
     while True:
         try:
@@ -90,17 +95,15 @@ def main():
             for address, dirs, photos in tree:
                 for photo in photos:
                     bot.send_photo(chat_id=user_id, photo=open(f'./images/{photo}', 'rb'))
+                    os.remove(f'./images/{photo}')
                     time.sleep(10)
         except ConnectionError:
             time.sleep(60)
         except requests.exceptions.ReadTimeout:
             pass
-        break
+        time.sleep(sleep_time)
 
 
 if __name__ == '__main__':
     load_dotenv()
-    #fetch_spacex_last_launch()
-    #fetch_nasa_apod()
-    #fetch_nasa_epic()
     main()
