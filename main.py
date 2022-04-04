@@ -84,7 +84,7 @@ def fetch_nasa_epic():
 def main():
     token = os.getenv('TOKEN_TELEGRAM')
     user_id = os.getenv('USER_ID')
-    sleep_time = os.getenv('SLEEP_TIME')
+    sleep_time = os.getenv('SLEEP_TIME', 86 400)
     fetch_spacex_last_launch()
     fetch_nasa_apod()
     fetch_nasa_epic()
