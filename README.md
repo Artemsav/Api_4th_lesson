@@ -1,26 +1,40 @@
-# Скрипт для сокращения ссылок с помощью сервиса bitly.com
+# NASA's space photo bot
 
-Скрипт для сокращение ссылок с помощью сервиса bitly.com, а также подчета количества кликов на сокращенную ссылку
+## Project description
 
-## Запуск
+The script downloads photos from SpaceX and NASA and then published it in the telegram channel every day that you configure via environmental variables, to run the script type in the console:
 
-- Скачайте код
-- Установите зависимости командой `pip install -r requirements.txt`
-- Запустите скрипт командой `python3 click_counter.py https://www.google.com`,
-где `https://www.google.com` - это адрес сайта, который нужно сократить, либо это готовая bitly ссылка формата `https://bit.ly/3Izpair`
-Пример работы скрипта:
+```bash
+python main.py
+```
 
-[![asciicast](https://asciinema.org/a/481232.svg)](https://asciinema.org/a/481232?t=16)
+Example of message in channel:
 
-## Переменные окружения
+![Example](./devman.png)
 
-API Token берётся из переменных окружения. Bitly не даст вам данные, пока вы не получите персональный ключ – “токен”. Он нужен для взаимодействия с API Bitly. Для получение необходимо зарегистрироваться [здесь](https://bit.ly/) и следовать инструкции на сайте . Чтобы определить переменную окружения, создайте файл `.env` рядом с `click_counter.py` и запишите туда данные в таком формате: `ПЕРЕМЕННАЯ=значение`.
+## Instalation
 
-Необходимо задать переменные вида:
+Python3 should be already installed. Then use pip (or pip3, if there is a conflict with Python2) to install dependencies:
 
-- `BITLY_TOKEN=0e4a00000fdc42bcvd00ab0000opal04e16c00a00` - обязательная переменная
-- `DOMAIN=somedoin.com` - можно задать пользовательский домен при наличие премиум подписки
+```bash
+pip install -r requirements.txt
+```
 
-## Цели проекта
+There is enviroment variables using in the application, you will need tp create ```.env``` file. A ```.env``` file is a text file containing key value pairs of all the environment variables required by the application. You can see example of it below:
 
-Код написан в учебных целях — это урок в курсе по Python и веб-разработке на сайте [Devman](https://dvmn.org).
+```python
+# example of environment variables defined inside a .env file
+NASA_API_KEY=
+TOKEN_TELEGRAM=1253123421:FFA1DSGOh_dfQACXYT5IiQwEBP5CwJozyP8
+CHANNEL_ID=@space_photos_ch
+SLEEP_TIME=3600
+```
+
+NASA_API_KEY = to get it go [here](https://api.nasa.gov/) and follow the instructions
+TOKEN_TELEGRAM - to get it please writte to Telegram @BotFather bot, first you shall ```/start``` command, than ```/newbot```, than follow the instruction in Telegram.  
+CHANNEL_ID - create channel and take link from it.
+SLEEP_TIME - sleep time (time gap between two messages) in seconds
+
+## Project Goals
+
+The code is written for educational purposes on online-course for web-developers [Devman](https://dvmn.org)
