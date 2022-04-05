@@ -24,7 +24,7 @@ There is enviroment variables using in the application, you will need tp create 
 
 ```python
 # example of environment variables defined inside a .env file
-NASA_API_KEY=
+NASA_API_KEY=aAapzKhjRertyQmc6eKzGHJKLKwcXBf87YKMtLB5
 TOKEN_TELEGRAM=1253123421:FFA1DSGOh_dfQACXYT5IiQwEBP5CwJozyP8
 CHANNEL_ID=@space_photos_ch
 SLEEP_TIME=3600
