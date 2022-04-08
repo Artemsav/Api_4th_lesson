@@ -9,14 +9,12 @@ from dotenv import load_dotenv
 from telegram import Bot
 
 
-def fetch_spacex_last_launch():
+def fetch_spacex_last_launch(folder='images'):
     url = 'https://api.spacexdata.com/v4/launches/latest'
     flight_data = requests.get(url)
     flight_data_json = flight_data.json()
     images_urls = flight_data_json.get('links').get('flickr').get('original')
-    folder = 'images'
-    home = Path().resolve()
-    path = Path(home, folder)
+    path = Path().resolve()/folder
     Path(path).mkdir(parents=True, exist_ok=True)
     for index, img_url in enumerate(images_urls):
         file_name = f'spacex{index}.jpg'
@@ -35,14 +33,12 @@ def get_extention(url):
     return extention
 
 
-def fetch_nasa_apod():
+def fetch_nasa_apod(folder='images'):
     api_key = os.getenv('NASA_API_KEY')
     url = 'https://api.nasa.gov/planetary/apod'
     number_of_pictures = 10
     payload = {'api_key': api_key, 'count': number_of_pictures}
-    folder = 'images'
-    home = Path().resolve()
-    path = Path(home, folder)
+    path = Path().resolve()/folder
     Path(path).mkdir(parents=True, exist_ok=True)
     nasa_response = requests.get(url=url, params=payload)
     nasa_response_json = nasa_response.json()
@@ -59,9 +55,11 @@ def fetch_nasa_apod():
                 file.write(response.content)
 
 
-def fetch_nasa_epic():
+def fetch_nasa_epic(folder='images'):
     api_key = os.getenv('NASA_API_KEY')
     payload = {'api_key': api_key}
+    path = Path().resolve()/folder
+    Path(path).mkdir(parents=True, exist_ok=True)
     url = 'https://api.nasa.gov/EPIC/api/natural/images?api_key=DEMO_KEY'
     nasa_response = requests.get(url)
     for index, _ in enumerate(nasa_response.json()):
@@ -69,10 +67,6 @@ def fetch_nasa_epic():
         year, month, day = date.split('-')
         image_id = _.get('image')
         image_url = f'https://api.nasa.gov/EPIC/archive/natural/{year}/{month}/{day}/png/{image_id}.png'
-        folder = 'images'
-        home = Path().resolve()
-        path = Path(home, folder)
-        Path(path).mkdir(parents=True, exist_ok=True)
         file_name = f'EPIC{index}.png'
         named_path = f'{path}/{file_name}'
         img_r = requests.get(url=image_url, params=payload)
