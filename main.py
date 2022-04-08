@@ -33,8 +33,7 @@ def get_extention(url):
     return extention
 
 
-def fetch_nasa_apod(folder='images'):
-    api_key = os.getenv('NASA_API_KEY')
+def fetch_nasa_apod(api_key, folder='images'):
     url = 'https://api.nasa.gov/planetary/apod'
     number_of_pictures = 10
     payload = {'api_key': api_key, 'count': number_of_pictures}
@@ -55,8 +54,7 @@ def fetch_nasa_apod(folder='images'):
                 file.write(response.content)
 
 
-def fetch_nasa_epic(folder='images'):
-    api_key = os.getenv('NASA_API_KEY')
+def fetch_nasa_epic(api_key, folder='images'):
     payload = {'api_key': api_key}
     path = Path().resolve()/folder
     Path(path).mkdir(parents=True, exist_ok=True)
@@ -77,12 +75,13 @@ def fetch_nasa_epic(folder='images'):
 
 def main():
     load_dotenv()
+    api_key = os.getenv('NASA_API_KEY')
     token = os.getenv('TOKEN_TELEGRAM')
     user_id = os.getenv('CHANNEL_ID')
     sleep_time = os.getenv('SLEEP_TIME', 86400)
     fetch_spacex_last_launch()
-    fetch_nasa_apod()
-    fetch_nasa_epic()
+    fetch_nasa_apod(api_key=api_key)
+    fetch_nasa_epic(api_key=api_key)
     bot = Bot(token=token)
     while True:
         try:
