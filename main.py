@@ -40,14 +40,14 @@ def fetch_nasa_apod():
     url = 'https://api.nasa.gov/planetary/apod'
     number_of_pictures = 10
     payload = {'api_key': api_key, 'count': number_of_pictures}
+    folder = 'images'
+    home = Path().resolve()
+    path = Path(home, folder)
+    Path(path).mkdir(parents=True, exist_ok=True)
     r = requests.get(url=url, params=payload)
     api_r = r.json()
     for index, image_inf in enumerate(api_r):
         image_url = image_inf.get('url')
-        folder = 'images'
-        home = Path().resolve()
-        path = Path(home, folder)
-        Path(path).mkdir(parents=True, exist_ok=True)
         ext = get_extention(image_url)
         allowed_ext = ['.jpg', '.gif', '.png']
         if ext in allowed_ext:
@@ -82,6 +82,7 @@ def fetch_nasa_epic():
 
 
 def main():
+    load_dotenv()
     token = os.getenv('TOKEN_TELEGRAM')
     user_id = os.getenv('CHANNEL_ID')
     sleep_time = os.getenv('SLEEP_TIME', 86400)
@@ -105,5 +106,4 @@ def main():
 
 
 if __name__ == '__main__':
-    load_dotenv()
     main()
