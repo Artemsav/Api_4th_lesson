@@ -11,9 +11,9 @@ from telegram import Bot
 
 def fetch_spacex_last_launch():
     url = 'https://api.spacexdata.com/v4/launches/latest'
-    r = requests.get(url)
-    api_r = r.json()
-    images_urls = api_r.get('links').get('flickr').get('original')
+    flight_data = requests.get(url)
+    flight_data_json = flight_data.json()
+    images_urls = flight_data_json.get('links').get('flickr').get('original')
     folder = 'images'
     home = Path().resolve()
     path = Path(home, folder)
@@ -44,27 +44,27 @@ def fetch_nasa_apod():
     home = Path().resolve()
     path = Path(home, folder)
     Path(path).mkdir(parents=True, exist_ok=True)
-    r = requests.get(url=url, params=payload)
-    api_r = r.json()
-    for index, image_inf in enumerate(api_r):
+    nasa_response = requests.get(url=url, params=payload)
+    nasa_response_json = nasa_response.json()
+    for index, image_inf in enumerate(nasa_response_json):
         image_url = image_inf.get('url')
         ext = get_extention(image_url)
         allowed_ext = ['.jpg', '.gif', '.png']
         if ext in allowed_ext:
             file_name = f'NASA{index}{ext}'
             named_path = f'{path}/{file_name}'
-            responce = requests.get(image_url)
-            responce.raise_for_status()
+            response = requests.get(image_url)
+            response.raise_for_status()
             with open(named_path, 'wb') as file:
-                file.write(responce.content)
+                file.write(response.content)
 
 
 def fetch_nasa_epic():
     api_key = os.getenv('NASA_API_KEY')
     payload = {'api_key': api_key}
     url = 'https://api.nasa.gov/EPIC/api/natural/images?api_key=DEMO_KEY'
-    r = requests.get(url)
-    for index, _ in enumerate(r.json()):
+    nasa_response = requests.get(url)
+    for index, _ in enumerate(nasa_response.json()):
         date, time = _.get('date').split()
         year, month, day = date.split('-')
         image_id = _.get('image')
