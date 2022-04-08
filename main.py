@@ -88,7 +88,8 @@ def main():
             tree = os.walk('./images')
             for address, dirs, photos in tree:
                 for photo in photos:
-                    bot.send_photo(chat_id=user_id, photo=open(f'./images/{photo}', 'rb'))
+                    with open(f'./images/{photo}', 'rb') as file:
+                        bot.send_photo(chat_id=user_id, photo=file)
                     os.remove(f'./images/{photo}')
                     time.sleep(10)
         except ConnectionError:
