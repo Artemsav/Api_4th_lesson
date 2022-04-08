@@ -86,7 +86,7 @@ def main():
     while True:
         try:
             tree = os.walk('./images')
-            for address, dirs, photos in tree:
+            for path, dirs, photos in tree:
                 for photo in photos:
                     with open(f'./images/{photo}', 'rb') as file:
                         bot.send_photo(chat_id=user_id, photo=file)
