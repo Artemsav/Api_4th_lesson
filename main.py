@@ -14,7 +14,7 @@ def fetch_spacex_last_launch(folder='images'):
     flight_data = requests.get(url)
     flight_data_json = flight_data.json()
     images_urls = flight_data_json.get('links').get('flickr').get('original')
-    path = Path().resolve()/folder
+    path = Path().resolve() / folder
     Path(path).mkdir(parents=True, exist_ok=True)
     for index, img_url in enumerate(images_urls):
         file_name = f'spacex{index}.jpg'
@@ -37,7 +37,7 @@ def fetch_nasa_apod(api_key, folder='images'):
     url = 'https://api.nasa.gov/planetary/apod'
     number_of_pictures = 10
     payload = {'api_key': api_key, 'count': number_of_pictures}
-    path = Path().resolve()/folder
+    path = Path().resolve() / folder
     Path(path).mkdir(parents=True, exist_ok=True)
     nasa_response = requests.get(url=url, params=payload)
     nasa_response_json = nasa_response.json()
@@ -56,7 +56,7 @@ def fetch_nasa_apod(api_key, folder='images'):
 
 def fetch_nasa_epic(api_key, folder='images'):
     payload = {'api_key': api_key}
-    path = Path().resolve()/folder
+    path = Path().resolve() / folder
     Path(path).mkdir(parents=True, exist_ok=True)
     url = 'https://api.nasa.gov/EPIC/api/natural/images?api_key=DEMO_KEY'
     nasa_response = requests.get(url)
