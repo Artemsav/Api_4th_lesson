@@ -19,10 +19,10 @@ def fetch_spacex_last_launch(folder='images'):
     for index, img_url in enumerate(images_urls):
         file_name = f'spacex{index}.jpg'
         named_path = f'{path}/{file_name}'
-        responce = requests.get(img_url)
-        responce.raise_for_status()
+        response = requests.get(img_url)
+        response.raise_for_status()
         with open(named_path, 'wb') as file:
-            file.write(responce.content)
+            file.write(response.content)
 
 
 def get_extention(url):
@@ -78,7 +78,7 @@ def main():
     api_key = os.getenv('NASA_API_KEY')
     token = os.getenv('TOKEN_TELEGRAM')
     user_id = os.getenv('CHANNEL_ID')
-    sleep_time = os.getenv('SLEEP_TIME', 86400)
+    sleep_time = int(os.getenv('SLEEP_TIME', 86400))
     fetch_spacex_last_launch()
     fetch_nasa_apod(api_key=api_key)
     fetch_nasa_epic(api_key=api_key)
